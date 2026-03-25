@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")   // Supabase transaction pooler (for runtime)
+  directUrl = env("DIRECT_URL")     // Supabase direct connection (for prisma db push)
+}
+
+enum Role {
+  user
+  admin
+}
+
+enum Status {
+  live
+  beta
+  stealth
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  role      Role     @default(user)
+  createdAt DateTime @default(now())
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  name        String
+  category    String
+  description String
+  status      Status   @default(live)
+  metric      String?
+  icon        String   @default("🚀")
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+}
